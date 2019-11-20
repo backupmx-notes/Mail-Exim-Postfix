@@ -1,0 +1,76 @@
+DATE=`date | awk {'print $2,$3'}`
+
+echo -e "\e[40;38;5;82mNeed to find { To or From } Please type to or from in lowercase\e[30;48;5;82m\e[0m: "
+read -p "Mail-TO or Mail-FROM, please type : " mailfrom
+
+if [ "$mailfrom" == "from" ]; then
+
+echo "Enter The Username You Want Check Logs"
+read -p "e.g. arvind@znetlive.com (SCRIPT_FOR_POSTFIX_LOG_ONLY) : " username
+
+echo -e "\e[40;38;5;82mPlease wait while checking for the recent logs of mails for this User $username\e[30;48;5;82m\e[0m"
+echo -e "\e[40;38;5;82mTotal Number Of Mail Sent From $username \e[30;48;5;82m\e[0m"
+grep "from=<${username}>" /var/log/maillog | awk '{ print $6 }' | sort | uniq -c | wc -l > /tmp/maillog_number && cat /tmp/maillog_number
+
+echo -e "\e[40;38;5;82mToday's Total Number Of Mail Sent From $username \e[30;48;5;82m\e[0m"
+grep "from=<${username}>" /var/log/maillog |grep -E "${DATE}" | awk '{ print $6 }' | sort | uniq -c | wc -l > /tmp/maillog_number && cat /tmp/maillog_number
+grep "from=<${username}>" /var/log/maillog | grep -E "${DATE}" | awk '{ print $6 }' | sort | uniq -c | sed 's/.$//' | awk '{print $2}' > /tmp/lastmail && tail /tmp/lastmail > /tmp/lasttenmail_in
+for maillog in `cat /tmp/lasttenmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lasttenmail_out && cat /tmp/lasttenmail_out
+
+
+
+grep "from=<${username}>" /var/log/maillog | awk '{ print $6 }' | sort | uniq -c | sed 's/.$//' | awk '{print $2}' > /tmp/lastmail && tail /tmp/lastmail > /tmp/lasttenmail_in
+tail -n 50 /tmp/lastmail > /tmp/lastftmail_in && tail -n 100 /tmp/lastmail > /tmp/lasthnrdmail_in
+
+for maillog in `cat /tmp/lastftmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lastftmail_out 
+echo "Your Last 50 Mails: /tmp/lastftmail_out"
+
+for maillog in `cat /tmp/lasthnrdmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lasthnrdmail_out
+echo "Your Last 100 Mails: /tmp/lasthnrdmail_out"
+
+echo -e "\e[40;38;5;82mThanks & Regards #ZNetLive Technologies Private Limited'\e[30;48;5;82m\e[0m"
+
+elif [ "$mailfrom" == "to" ]; then
+
+echo "Enter The Username You Want Check Logs"
+read -p "e.g. arvind@znetlive.com (SCRIPT_FOR_POSTFIX_LOG_ONLY) : " username
+
+echo -e "\e[40;38;5;82mPlease wait while checking for the recent logs of mails for this User $username\e[30;48;5;82m\e[0m"
+echo -e "\e[40;38;5;82mTotal Number Of Mail Sent to $username \e[30;48;5;82m\e[0m"
+grep "to=<${username}>" /var/log/maillog | awk '{ print $6 }' | sort | uniq -c | wc -l > /tmp/maillog_number && cat /tmp/maillog_number
+
+echo -e "\e[40;38;5;82mToday's Total Number Of Mail Sent to $username \e[30;48;5;82m\e[0m"
+grep "to=<${username}>" /var/log/maillog |grep -E "$DATE" | awk '{ print $6 }' | sort | uniq -c | wc -l > /tmp/maillog_number && cat /tmp/maillog_number
+
+grep "to=<${username}>" /var/log/maillog |grep -E "$DATE" | awk '{ print $6 }' | sort | uniq -c | sed 's/.$//' | awk '{print $2}' > /tmp/lastmail && tail /tmp/lastmail > /tmp/lasttenmail_in
+for maillog in `cat /tmp/lasttenmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lasttenmail_out && cat /tmp/lasttenmail_out
+
+
+grep "to=<${username}>" /var/log/maillog | awk '{ print $6 }' | sort | uniq -c | sed 's/.$//' | awk '{print $2}' > /tmp/lastmail && tail /tmp/lastmail > /tmp/lasttenmail_in
+tail -n 50 /tmp/lastmail > /tmp/lastftmail_in && tail -n 100 /tmp/lastmail > /tmp/lasthnrdmail_in
+
+
+for maillog in `cat /tmp/lastftmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lastftmail_out 
+echo "Your Last 50 Mails: /tmp/lastftmail_out"
+
+for maillog in `cat /tmp/lasthnrdmail_in`; do grep "$maillog" /var/log/maillog; done > /tmp/lasthnrdmail_out
+echo "Your Last 100 Mails: /tmp/lasthnrdmail_out"
+
+echo -e "\e[40;38;5;82mThanks & Regards #ZNetLive Technologies Private Limited'\e[30;48;5;82m\e[0m"
+
+elif [ "$mailfrom" != "to" ]; then
+
+echo -e "\e[40;38;5;82mPlease type to or from in lower cashe only \e[0m: "
+
+echo -e "\e[40;38;5;82mNeed to find { To or From in lower cashe only } \e[30;48;5;82m [y/n]? \e[0m: "
+read -p "e.g. arvind@znetlive.com (SCRIPT_FOR_POSTFIX_LOG_ONLY) : " username
+
+elif [ "$mailfrom" != "from" ]; then
+
+echo -e "\e[40;38;5;82mPlease type to or from in lower cashe only \e[0m: "
+
+echo -e "\e[40;38;5;82mNeed to find { To or From in lower cashe only } \e[30;48;5;82m\e[0m: "
+read -p "e.g. arvind@znetlive.com (SCRIPT_FOR_POSTFIX_LOG_ONLY) : " username
+
+  exit 1;
+fi
